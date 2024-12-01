@@ -11,6 +11,9 @@ for (const row of rows) {
 	columnTwo.push(Number(cols[1]));
 }
 
+columnOne.sort();
+columnTwo.sort();
+
 let sum = 0;
 
 for (let i = 0; i < columnTwo.length; i++) {

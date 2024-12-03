@@ -1,9 +1,11 @@
 const data = await Deno.readTextFile('./day1/input.txt');
 
-let columnOne: Array<number> = [];
-let columnTwo: Array<number> = [];
+const tZero = performance.now()
 
-let rows = data.split('\n');
+const columnOne: Array<number> = [];
+const columnTwo: Array<number> = [];
+
+const rows = data.split('\n');
 
 for (const row of rows) {
 	const cols = row.split('   ');
@@ -13,6 +15,10 @@ for (const row of rows) {
 
 columnOne.sort();
 columnTwo.sort();
+
+const tOne = performance.now();
+
+console.log(`Parse and sort took ${1000 * (tOne - tZero)} microseconds!`);
 
 let sum = 0;
 
@@ -26,7 +32,12 @@ for (let i = 0; i < columnTwo.length; i++) {
 	sum += diff;
 }
 
+const tTwo = performance.now()
+
 console.log('Part One Solution: ', sum);
+console.log(`Took ${1000 * (tTwo - tOne)} microseconds!`);
+
+const tThree = performance.now();
 
 const appearances: Record<number, number> = {};
 
@@ -46,4 +57,8 @@ for (const num of columnOne) {
 	sum2 += num * appearances[num];
 }
 
+const tFour = performance.now()
+
 console.log('Part Two Solution: ', sum2);
+console.log(`Took ${1000 * (tFour - tThree)} microseconds!`);
+

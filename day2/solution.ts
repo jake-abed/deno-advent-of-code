@@ -56,11 +56,15 @@ const t5 = performance.now();
 console.log("Part two answer: ", countTwo);
 console.log(`Part 2 took ${(t5 - t4) * 1000} microseconds!`);
 
+// In hindsight, this is hideous and I should be ashamed of myself.
+// It's will never be efficient because Stringifying to check equality
+// will never be efficient.
 function isLineSafe(line: Array<number>) {
+  const jsonLine = JSON.stringify(line);
   const sorted = (
-    JSON.stringify(line) === JSON.stringify(line.toSorted((a, b) => a - b))
+    jsonLine === JSON.stringify(line.toSorted((a, b) => a - b))
   ) || 
-  (JSON.stringify(line) == JSON.stringify(line.toSorted((a, b) => b - a)))
+  (jsonLine == JSON.stringify(line.toSorted((a, b) => b - a)))
   if (!sorted) {
     return sorted;
   }

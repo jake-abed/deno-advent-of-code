@@ -48,11 +48,10 @@ const partTwo = () => {
   return sum;
 }
 
-console.log("Starting part one: ");
 const t0 = performance.now();
-console.log(partOne());
+console.log("Part one solution: ", partOne());
 const t1 = performance.now();
 console.log(`Part one took: ${(t1-t0) * 1000} microseconds!`);
-console.log(partTwo());
+console.log("Part two solution: ", partTwo());
 const t2 = performance.now();
 console.log(`Part two took: ${(t2-t1) * 1000} microseconds!`);

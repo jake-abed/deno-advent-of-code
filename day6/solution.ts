@@ -6,7 +6,8 @@ const matrix = xAxis.map(line => line.split(""));
 
 enum Direction {NORTH, EAST, SOUTH, WEST};
 
-let curPos: Array<number> = findStart();
+const start: Array<number> = findStart();
+let curPos: Array<number> = [...start];
 let curDir = Direction.NORTH;
 const t1 = performance.now();
 
@@ -18,6 +19,20 @@ const t3 = performance.now();
 
 console.log(`Part one solution: ${p1}`);
 console.log(`Part one took: ${Math.floor((t3-t2) * 1000)} microseconds!`);
+
+curPos = [...start];
+curDir = Direction.NORTH;
+const t4 = performance.now();
+const p2 = partTwo();
+const t5 = performance.now();
+
+console.log(`Part two solution: ${p2}`);
+console.log(`Part two took: ${Math.floor((t5-t4) * 1000)} microseconds!`);
+
+type turn = {
+  coord: Array<number>,
+  direction: number,
+}
 
 function findStart(): Array<number> {
   for (let i = 0; i < matrix.length; i++) {
@@ -122,5 +137,72 @@ function partOne(): number {
   return visited.size;
 }
 
+function partTwo(): number {
+  const loopLocks: Set<string> = new Set();
+  const visited: Set<string> = new Set();
+  const turns: Array<turn> = []; 
+  visited.add(curPos.toString());
+  let prevPos = [...curPos];
+  let exited = false;
+  while (exited === false) {
+    if (nextMoveOut()) {
+      exited = true;
+      break;
+    }
+    let isLoop = false; 
+    switch (nextSpace()) {
+      case ".":
+        prevPos = [... curPos];
+        moveOnce();
+        visited.add(curPos.toString());
+        isLoop = checkForLoop(turns, prevPos);
+        if (isLoop && visited.has(prevPos.toString())) {
+          loopLocks.add(curPos.toString());
+        }
+        break;
+      case "^":
+        prevPos = [... curPos];
+        moveOnce();
+        visited.add(curPos.toString());
+        break;
+      case "#":
+        turnRight();
+        turns.push({coord: curPos, direction: curDir});
+        break;
+    }
+  }
+
+  return loopLocks.size;
+}
+
+function checkForLoop(
+  turns: Array<turn>,
+  prevPos: Array<number>
+): boolean {
+  let isLoop = false;
+  if (turns.length < 2) return isLoop;
+  for (const turn of turns) {
+    switch (curDir) {
+      case Direction.NORTH:
+        if (turn.coord[0] === prevPos[0] && turn.direction === Direction.SOUTH) isLoop = true;
+        break;
+      case Direction.EAST:
+        if (prevPos[1] === turn.coord[1] && turn.direction === Direction.WEST) isLoop = true;
+        break;
+      case Direction.SOUTH:
+        if (prevPos[0] === turn.coord[0] && turn.direction === Direction.NORTH) isLoop = true;
+        break;
+      case Direction.WEST:
+        if (prevPos[1] === turn.coord[1] && turn.direction === Direction.EAST) isLoop = true;
+        break;
+    }
+    if (isLoop) {
+      console.log(`Found at ${prevPos} ${turn.coord} (${turns.indexOf(turn)})! while facing ${curDir}`);
+      break;
+    }
+  }
+
+  return isLoop;
+}
 
 // Sample solution expects 41 distinct positions as the solution.
